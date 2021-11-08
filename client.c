@@ -41,7 +41,9 @@ int main(int argc, char *argv[]) {
    serv_addr.sin_port = htons(portno);
 
    /* Now connect to the server */
-   if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+   int connected;
+   connected = connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0;
+   if (connected) {
       perror("ERROR connecting");
       exit(1);
    }
@@ -62,12 +64,20 @@ int main(int argc, char *argv[]) {
       exit(1);
    }
 
+   // Immediately shutdown the connection
+   // and close the socket
+   /* shutdown(sockfd); */
+   close(connected);
+   close(sockfd);
+
+   printf("Closed server conn and socket conn\n");
+
    /* Now read server response */
    bzero(buffer,256);
    n = read(sockfd, buffer, 255);
 
    if (n < 0) {
-      perror("ERROR reading from socket");
+      perror("ERROR reading from socket\n");
       exit(1);
    }
 

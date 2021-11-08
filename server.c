@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -47,6 +48,8 @@ int main( int argc, char *argv[] ) {
    /* Accept actual connection from the client */
    newsockfd = accept(sockfd, (struct sockaddr *)&cli_addr, &clilen);
 
+   printf("Connected to client.\n");
+
    if (newsockfd < 0) {
       perror("ERROR on accept");
       exit(1);
@@ -54,6 +57,9 @@ int main( int argc, char *argv[] ) {
 
    /* If connection is established then start communicating */
    bzero(buffer,256);
+   printf("Sleeping\n");
+   sleep(5);
+   printf("Done sleeping, waiting for message from client\n");
    n = read( newsockfd,buffer,255 );
 
    if (n < 0) {
